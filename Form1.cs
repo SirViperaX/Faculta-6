@@ -76,13 +76,42 @@ namespace Faculta_6
             else
                 timer1.Enabled = true;
         }
-
+        int steps = 0;
         private void timer1_Tick(object sender, EventArgs e)
         {
+            data.Add(Count());
             Tick();
             Draw();
+            steps++;
+            label1.Text = steps.ToString();
+            if (steps == 40)
+            {
+                timer1.Enabled = false;
+                Save(@"DataOut.txt");
+            }
         }
 
+        private void Save(string fileName)
+        {
+            TextWriter save = new StreamWriter(fileName);
+            foreach( int i in data)
+            {
+                save.WriteLine(i);
+            }
+            save.Close();
+        }
+
+
+        private int Count()
+        {
+            int nr = 0;
+            for (int i = 0; i < n; i++)
+                for (int j = 0; j < m; j++)
+                    if (A[i, j] == 1)
+                        nr++;
+            return nr;
+        }
+        List<int> data = new List<int>();
         private void Tick()
         {
             int[,] M = new int[n, m];
@@ -106,10 +135,20 @@ namespace Faculta_6
                         s++;
                     if ((i + 1 < n && j + 1 < m) && (A[i + 1, j + 1] == 1))
                         s++;
-                    if (s % 2 == 0)
-                        M[i, j] = 0;
+                    if (A[i, j] == 1)
+                    {
+                        if (s < 2)
+                            M[i, j] = 0;
+                        if(s ==2 || s == 3)
+                            M[i, j] = 1;
+                        if(s > 3)
+                            M[i, j] = 0;
+                    }
                     else
-                        M[i, j] = 1;
+                    {
+                        if(s == 3)
+                            M[i, j] = 1;
+                    }
                 }
             A = M;
         }
