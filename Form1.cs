@@ -27,7 +27,6 @@ namespace Faculta_6
             Initialise();
             LoadMatrix(@"Resources.txt");
             Draw();
-            pictureBox1.Image = b;
         }
 
         private void LoadMatrix(string fileName)
@@ -55,6 +54,7 @@ namespace Faculta_6
         }
         private void Draw()
         {
+            g.Clear(Color.AliceBlue);
             float dx = (float)pictureBox1.Width / m;
             float dy = (float)pictureBox1.Height / n;
             for (int i = 0; i < n; i++)
@@ -65,7 +65,53 @@ namespace Faculta_6
                     else
                         g.FillRectangle(Brushes.Green, j * dx, i * dy, dx, dy);
                     g.DrawRectangle(Pens.Black, j * dx, i * dy, dx, dy);
-                }     
+                }
+            pictureBox1.Image = b;
+        }
+
+        private void generateNew_Click(object sender, EventArgs e)
+        {
+            if (timer1.Enabled)
+                timer1.Enabled = false;
+            else
+                timer1.Enabled = true;
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            Tick();
+            Draw();
+        }
+
+        private void Tick()
+        {
+            int[,] M = new int[n, m];
+            for (int i = 0; i < n; i++)
+                for (int j = 0; j < m; j++)
+                {
+                    int s = 0;
+                    if ((i - 1 >= 0 && j - 1 >= 0) && (A[i - 1, j - 1] == 1))
+                        s++;
+                    if ((i - 1 >= 0) && (A[i - 1, j] == 1))
+                        s++;
+                    if ((i - 1 >= 0 && j + 1 < m) && (A[i - 1, j + 1] == 1))
+                        s++;
+                    if ((j - 1 >= 0) && (A[i, j - 1] == 1))
+                        s++;
+                    if (( j + 1 < m) && (A[i , j + 1] == 1))
+                        s++;
+                    if ((i + 1 < n && j - 1 >= 0) && (A[i + 1, j - 1] == 1))
+                        s++;
+                    if ((i + 1 < n) && (A[i + 1, j] == 1))
+                        s++;
+                    if ((i + 1 < n && j + 1 < m) && (A[i + 1, j + 1] == 1))
+                        s++;
+                    if (s % 2 == 0)
+                        M[i, j] = 0;
+                    else
+                        M[i, j] = 1;
+                }
+            A = M;
         }
     }
 }
